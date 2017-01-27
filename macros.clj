@@ -126,3 +126,27 @@
   (letfn [(on-entry [[k v]]
             [(f k) v])]f
          (clojure.walk/postwalk (fn [x] (if (map? x) (into {} (map on-entry x)) x)) m)))
+
+(defmacro with-log
+  [& body]
+  `(let [s# (new java.io.StringWriter)]
+     (binding [*out* s#]
+       {:out ~@body :log (str s#)})))
+
+(defmacro debug-time
+  [message & body]
+  `(let [start# (System/nanoTime)
+         out# ~(conj body `do)
+         end# (System/nanoTime)]
+     (log/debug (str ~message " " (/ (- end# start#) 1000.0) " ms."))
+     out#))
+
+(defmacro defcatch
+  [fn-symbol args & body]
+  `(def ~fn-symbol
+     (fn ~args
+       (try
+         ~(conj body `do)
+         (catch Exception e#
+           {:status :error
+            :message (.getMessage e#)})))))
