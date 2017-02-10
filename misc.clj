@@ -41,3 +41,30 @@
     (assoc out :time time)))
 
 (process-thing-file "thing.edn")
+
+(defn psplit
+  [f xs]
+  (reduce
+   (fn [v x]
+     (update-in v [(if (f x) 0 1)] #(conj % x)))
+   [[] []]
+   xs))
+
+(defn mapm
+  [f coll]
+  (into {} (map f coll)))
+
+(s/fdef mapm
+  :args (s/cat :f fn? :coll map?)
+  :ret map?
+  :fn #(= (-> % :args :coll count) (-> % :ret count)))
+
+(defn fmap
+  [f m]
+  (into {} (for [[k v] m] [k (f v)])))
+
+(s/fdef fmap
+  :args (s/cat :f fn? :m map?)
+  :ret map?
+  :fn (s/and #(= (-> % :args :coll count) (-> % :ret count))
+             #(= (-> % :args :coll keys) (-> % :ret keys))))
