@@ -150,3 +150,22 @@
          (catch Exception e#
            {:status :error
             :message (.getMessage e#)})))))
+
+(defmacro with-metrics
+  [& body]
+  `(let [s# (new java.io.StringWriter)]
+     (binding [*out* s#]
+       (let [start# (System/nanoTime)
+             out# ~(conj body `do)
+             end# (System/nanoTime)]
+         {:out out#
+          :time (/ (- end# start#) 1000.0)
+          :log (str s#)}))))
+
+(defmacro with-time
+  [& body]
+  `(let [start# (System/nanoTime)
+         out# ~(conj body `do)
+         end# (System/nanoTime)]
+     {:out out#
+      :time (/ (- end# start#) 1000.0)}))
