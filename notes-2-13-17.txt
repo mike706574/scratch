@@ -1,1 +1,5 @@
+Cross-platform HTTP
+https://github.com/JulianBirch/cljs-ajax
 
+Alembic for loading new deps
+https://github.com/pallet/alembic
