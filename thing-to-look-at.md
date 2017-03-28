@@ -10,3 +10,5 @@ https://github.com/anmonteiro/lumo
 https://github.com/magnars/prone
 
 https://github.com/anmonteiro/resume
+
+http://blog.josephwilk.net/clojure/building-clojure-services-at-scale.html
