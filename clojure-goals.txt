@@ -4,3 +4,5 @@ Goals
 https://github.com/clojure-emacs/clj-refactor.el/wiki/cljr-add-project-dependency
 
 #2 Use M-x cider-undef to unalias things.
+
+#3 Use M-x cider-browse-ns-all to explore which namespaces are loaded.
