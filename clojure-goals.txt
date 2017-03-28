@@ -1,0 +1,6 @@
+Goals
+
+#1 Use cljr to hotload dependencies:
+https://github.com/clojure-emacs/clj-refactor.el/wiki/cljr-add-project-dependency
+
+#2 Use M-x cider-undef to unalias things.
