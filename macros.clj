@@ -169,3 +169,34 @@
          end# (System/nanoTime)]
      {:out out#
       :time (/ (- end# start#) 1000.0)}))
+
+(defmacro if-not-let
+  ([bindings then]
+   `(if-let ~bindings ~then nil))
+  ([bindings then else]
+   (let [form (bindings 0) tst (bindings 1)]
+     `(let [temp# ~tst]
+        (if-not temp#
+          ~then
+          (let [~form temp#]
+            ~else))))))
+
+(defmacro with-body
+  [[body-sym body-spec request] & body]
+  `(or (unsupported-media-type ~request)
+       (not-acceptable ~request)
+       (let [~body-sym (parsed-body ~request)]
+          (if-not ~body-sym
+            (body-response 400 ~request {:milo.server/message "Invalid request body representation."})
+            (if-let [validation-failure# (spec/explain-data ~body-spec ~body-sym)]
+              (body-response 400 ~request {:milo.server/message "Invalid request body."
+                                           :milo.server/data validation-failure#})
+              ~@body)))))
+
+(defmacro handle-exceptions
+  [request & body]
+  `(try
+     ~@body
+     (catch Exception e#
+       (log/error e# "An exception was thrown while processing a request.")
+       (body-response 500 ~request {:milo.server/message "An error occurred."}))))
