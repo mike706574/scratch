@@ -200,3 +200,14 @@
      (catch Exception e#
        (log/error e# "An exception was thrown while processing a request.")
        (body-response 500 ~request {:milo.server/message "An error occurred."}))))
+
+(defmacro is#
+  [form msg & body]
+  `(let [result# ~form]
+     (clojure.test/do-report
+      {:actual result#
+       :expected '~form
+       :message ~msg
+       :type (if result# :pass :fail)})
+     (when result#
+       ~@body)))
